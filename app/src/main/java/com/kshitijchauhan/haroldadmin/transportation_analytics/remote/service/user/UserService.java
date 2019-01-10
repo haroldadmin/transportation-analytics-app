@@ -1,11 +1,13 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user;
 
+import com.kshitijchauhan.haroldadmin.transportation_analytics.models.RouteRequest;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.common.CustomResponse;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserLoginRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserRegisterRequest;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserCollectionResponse;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserProfileResponse;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserRouteRequestsCollectionResponse;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserLoginResponse;
+
+import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.http.Body;
@@ -15,19 +17,19 @@ import retrofit2.http.Path;
 
 public interface UserService {
 
-    @GET("/users/")
-    Single<UserCollectionResponse> getAllUsers();
+    @GET("users/")
+    Single<List<User>> getAllUsers();
 
-    @GET("/users/{userId}")
-    Single<UserProfileResponse> getUser(@Path("userId") int userId);
+    @GET("users/{userId}")
+    Single<User> getUser(@Path("userId") int userId);
 
-    @GET("/users/{userId}/requests")
-    Single<UserRouteRequestsCollectionResponse> getRoutesForUser(@Path("userId") int userId);
+    @GET("users/{userId}/requests")
+    Single<List<RouteRequest>> getRoutesForUser(@Path("userId") int userId);
 
-    @POST("/users/register")
+    @POST("users/register")
     Single<CustomResponse> registerUser(@Body UserRegisterRequest request);
 
-    @POST("/users/register")
-    Single<CustomResponse> loginUser(@Body UserLoginRequest request);
+    @POST("users/login")
+    Single<UserLoginResponse> loginUser(@Body UserLoginRequest request);
 
 }
