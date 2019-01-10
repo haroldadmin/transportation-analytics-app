@@ -1,4 +1,4 @@
-package com.kshitijchauhan.haroldadmin.transportation_analytics.remote.models;
+package com.kshitijchauhan.haroldadmin.transportation_analytics.models;
 
 import com.google.gson.annotations.SerializedName;
 
