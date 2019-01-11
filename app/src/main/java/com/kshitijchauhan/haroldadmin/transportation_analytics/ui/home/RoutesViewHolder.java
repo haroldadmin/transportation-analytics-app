@@ -36,9 +36,6 @@ public class RoutesViewHolder extends RecyclerView.ViewHolder implements OnMapRe
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(this);
-
-        tvRouteName.setText(String.format("Route #%d", getAdapterPosition()));
-
     }
 
     public void bind(RouteRequest routeRequest) {
@@ -53,6 +50,7 @@ public class RoutesViewHolder extends RecyclerView.ViewHolder implements OnMapRe
                 .include(end)
                 .build();
         cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, margin);
+        tvRouteName.setText(String.format("Route #%d", getAdapterPosition() + 1));
     }
 
     @Override
