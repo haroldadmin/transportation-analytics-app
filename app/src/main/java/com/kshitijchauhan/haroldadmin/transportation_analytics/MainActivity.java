@@ -35,51 +35,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("default", Context.MODE_PRIVATE);
-
-        Gson gson = new GsonBuilder()
-                .create();
-
-        AuthInterceptor authInterceptor = new AuthInterceptor(sharedPreferences.getString
-                (Constants.KEY_JWT_TOKEN, ""));
-
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor)
-                .addInterceptor(loggingInterceptor)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("http://192.168.43.11:3000/api/")
-                .client(okHttpClient)
-                .build();
-
-        UserService service = retrofit.create(UserService.class);
-        RequestsService routeRequestService = retrofit.create(RequestsService.class);
-
-        routeRequestService.getAllRouteRequests()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(list -> {
-                    for (RouteRequest routeRequest : list) {
-                        Log.d(TAG, String.valueOf(routeRequest.getStartPointLat()));
-
-                    }
-                })
-                .subscribe();
-
-        UserRegisterRequest registerRequest = new UserRegisterRequest();
-        registerRequest.setEmail("user@test2.com");
-        registerRequest.setPassword("testpassword");
-        registerRequest.setName("Test User");
-
-        UserLoginRequest loginRequest = new UserLoginRequest();
-        loginRequest.setEmail("user@test2.com");
-        loginRequest.setPassword("testpassword");
+//        routeRequestService.getAllRouteRequests()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSuccess(list -> {
+//                    for (RouteRequest routeRequest : list) {
+//                        Log.d(TAG, String.valueOf(routeRequest.getStartPointLat()));
+//
+//                    }
+//                })
+//                .subscribe();
 //
 //        compositeDisposable.add(service.registerUser(registerRequest)
 //                .subscribeOn(Schedulers.io())
