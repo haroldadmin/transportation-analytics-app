@@ -1,5 +1,6 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.di.component;
 
+import com.kshitijchauhan.haroldadmin.transportation_analytics.MainActivity;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ApiServiceModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ContextModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.RetrofitModule;
@@ -23,4 +24,6 @@ public interface AppComponent {
     void inject(MainViewModel mainViewModel);
 
     void inject(AuthViewModel authViewModel);
+
+    void inject(MainActivity mainActivity);
 }

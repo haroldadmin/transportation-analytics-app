@@ -77,6 +77,7 @@ public class AuthViewModel extends ViewModel {
                     public void onSuccess(User user) {
                         sharedPreferences.edit()
                                 .putInt(Constants.KEY_USER_ID, user.getId())
+                                .putBoolean(Constants.KEY_IS_AUTHENTICATED, true)
                                 .apply();
                         mutableIsLoading.postValue(false);
                         mutableLoginSuccessState.setValue(true);
