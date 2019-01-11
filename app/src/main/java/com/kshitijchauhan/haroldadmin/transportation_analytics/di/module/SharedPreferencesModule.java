@@ -9,7 +9,6 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = {ContextModule.class})
-@Singleton
 public class SharedPreferencesModule {
 
     private String name;

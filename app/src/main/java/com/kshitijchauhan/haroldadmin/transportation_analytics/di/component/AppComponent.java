@@ -4,6 +4,9 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ApiServ
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ContextModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.RetrofitModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.SharedPreferencesModule;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.MainViewModel;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
@@ -13,7 +16,8 @@ import dagger.Component;
         ApiServiceModule.class,
         SharedPreferencesModule.class
 })
+@Singleton
 public interface AppComponent {
 
-    void inject();
+    void inject(MainViewModel mainViewModel);
 }
