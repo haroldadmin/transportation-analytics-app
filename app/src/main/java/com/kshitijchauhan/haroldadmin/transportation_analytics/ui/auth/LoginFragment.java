@@ -1,4 +1,4 @@
-package com.kshitijchauhan.haroldadmin.transportation_analytics.ui;
+package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth;
 
 
 import android.content.Intent;

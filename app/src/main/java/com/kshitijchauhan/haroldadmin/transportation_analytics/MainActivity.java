@@ -15,6 +15,7 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.us
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserRegisterRequest;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -27,87 +28,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private SharedPreferences sharedPreferences;
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        routeRequestService.getAllRouteRequests()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSuccess(list -> {
-//                    for (RouteRequest routeRequest : list) {
-//                        Log.d(TAG, String.valueOf(routeRequest.getStartPointLat()));
-//
-//                    }
-//                })
-//                .subscribe();
-//
-//        compositeDisposable.add(service.registerUser(registerRequest)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSuccess(response -> {
-//                    Log.d(TAG, response.getMessage());
-//                }).subscribe()
-//        );
-//
-//        compositeDisposable.add(
-//
-//                service.loginUser(loginRequest)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .doOnSuccess(response -> {
-//                            Log.d(TAG, response.getAccessToken());
-//                            sharedPreferences
-//                                    .edit()
-//                                    .putString(KEY_JWT_TOKEN, response.getAccessToken())
-//                                    .apply();
-//
-//                            authInterceptor.setToken(response.getAccessToken());
-//                        })
-//                        .subscribe()
-//
-//
-//        );
-//
-//        compositeDisposable.add(service.getAllUsers()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSuccess(userCollectionResponse -> {
-//                    for (User user : userCollectionResponse) {
-//                        Log.d(TAG, user.getName());
-//                    }
-//                })
-//                .subscribe()
-//        );
-//
-//        compositeDisposable.add(service.getUser(1)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSuccess(response -> {
-//                    Log.d(TAG, response.getName());
-//                })
-//                .subscribe()
-//        );
-//
-//        compositeDisposable.add(service.getRoutesForUser(1)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSuccess(response -> {
-//                    for (RouteRequest req : response) {
-//                        Log.d(TAG, String.valueOf(req.getEndPointLat()));
-//                    }
-//                })
-//                .subscribe()
-//        );
-    }
+        toolbar = findViewById(R.id.mainToolbar);
+        setSupportActionBar(toolbar);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.dispose();
+        if (savedInstanceState == null) {
+
+        }
+
     }
 }

@@ -3,7 +3,7 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.di.module;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.kshitijchauhan.haroldadmin.transportation_analytics.Constants;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.Constants;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.AuthInterceptor;
 
 import javax.inject.Singleton;

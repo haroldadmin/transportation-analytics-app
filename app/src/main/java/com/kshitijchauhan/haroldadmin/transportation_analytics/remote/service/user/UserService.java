@@ -17,11 +17,14 @@ import retrofit2.http.Path;
 
 public interface UserService {
 
-    @GET("users/")
+    @GET("users/all")
     Single<List<User>> getAllUsers();
 
+    @GET("users/")
+    Single<User> getUserProfile();
+
     @GET("users/{userId}")
-    Single<User> getUser(@Path("userId") int userId);
+    Single<User> getUserForId(@Path("userId") int userId);
 
     @GET("users/{userId}/requests")
     Single<List<RouteRequest>> getRoutesForUser(@Path("userId") int userId);

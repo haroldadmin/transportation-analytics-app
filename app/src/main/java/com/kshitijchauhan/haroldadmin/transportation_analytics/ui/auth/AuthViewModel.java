@@ -1,9 +1,10 @@
-package com.kshitijchauhan.haroldadmin.transportation_analytics.ui;
+package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth;
 
 import android.content.SharedPreferences;
 
-import com.kshitijchauhan.haroldadmin.transportation_analytics.Constants;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.SingleLiveEvent;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.Constants;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.SingleLiveEvent;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.TransportationAnalyticsApp;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.ApiManager;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.AuthInterceptor;
@@ -16,9 +17,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class AuthViewModel extends ViewModel {
@@ -50,24 +53,31 @@ public class AuthViewModel extends ViewModel {
         request.setPassword(password);
         apiManager.login(request)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
                     mutableIsLoading.postValue(true);
                 })
-                .subscribe(new SingleObserver<UserLoginResponse>() {
+                .doOnSuccess(userLoginResponse -> {
+                    sharedPreferences
+                            .edit()
+                            .putString(Constants.KEY_JWT_TOKEN, userLoginResponse.getAccessToken())
+                            .apply();
+
+                    authInterceptor.setToken(userLoginResponse.getAccessToken());
+                })
+                .flatMap((Function<UserLoginResponse, SingleSource<User>>) userLoginResponse ->
+                        apiManager.getUserProfile())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<User>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onSuccess(UserLoginResponse response) {
-                        sharedPreferences
-                                .edit()
-                                .putString(Constants.KEY_JWT_TOKEN, response.getAccessToken())
+                    public void onSuccess(User user) {
+                        sharedPreferences.edit()
+                                .putInt(Constants.KEY_USER_ID, user.getId())
                                 .apply();
-
-                        authInterceptor.setToken(response.getAccessToken());
                         mutableIsLoading.postValue(false);
                         mutableLoginSuccessState.setValue(true);
                     }

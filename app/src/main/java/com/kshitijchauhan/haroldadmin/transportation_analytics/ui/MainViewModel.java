@@ -1,7 +1,7 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui;
 
-import com.kshitijchauhan.haroldadmin.transportation_analytics.SingleLiveEvent;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.State;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.SingleLiveEvent;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.State;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;

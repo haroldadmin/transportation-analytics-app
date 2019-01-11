@@ -1,9 +1,8 @@
-package com.kshitijchauhan.haroldadmin.transportation_analytics.ui;
+package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
 

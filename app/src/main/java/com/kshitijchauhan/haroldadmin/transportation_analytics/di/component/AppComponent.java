@@ -4,7 +4,7 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ApiServ
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ContextModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.RetrofitModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.SharedPreferencesModule;
-import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.AuthViewModel;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth.AuthViewModel;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.MainViewModel;
 
 import javax.inject.Singleton;

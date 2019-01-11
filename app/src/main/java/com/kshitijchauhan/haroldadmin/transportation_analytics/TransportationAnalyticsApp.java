@@ -6,6 +6,7 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.di.component.AppC
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.component.DaggerAppComponent;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.ContextModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.SharedPreferencesModule;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.Constants;
 
 public class TransportationAnalyticsApp extends Application {
 
