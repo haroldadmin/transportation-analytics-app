@@ -10,5 +10,5 @@ public class Constants {
 
     public static final String KEY_USER_ID = "user-id";
 
-    public static final String BASE_URL = "http://192.168.43.11:3000/api/";
+    public static final String BASE_URL = "http://192.168.1.219:3000/api/";
 }
