@@ -2,6 +2,8 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class RouteRequest {
 
     @SerializedName("id")
@@ -57,5 +59,23 @@ public class RouteRequest {
 
     public void setEndPointLong(double endPointLong) {
         this.endPointLong = endPointLong;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RouteRequest that = (RouteRequest) o;
+        return id == that.id &&
+                Double.compare(that.startPointLat, startPointLat) == 0 &&
+                Double.compare(that.startPointLong, startPointLong) == 0 &&
+                Double.compare(that.endPointLat, endPointLat) == 0 &&
+                Double.compare(that.endPointLong, endPointLong) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, startPointLat, startPointLong, endPointLat, endPointLong);
     }
 }

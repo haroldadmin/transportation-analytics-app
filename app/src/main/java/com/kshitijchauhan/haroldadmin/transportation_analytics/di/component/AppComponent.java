@@ -7,6 +7,8 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.Retrofi
 import com.kshitijchauhan.haroldadmin.transportation_analytics.di.module.SharedPreferencesModule;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth.AuthViewModel;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.MainViewModel;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.home.HomeFragment;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.ui.home.HomeViewModel;
 
 import javax.inject.Singleton;
 
@@ -26,4 +28,8 @@ public interface AppComponent {
     void inject(AuthViewModel authViewModel);
 
     void inject(MainActivity mainActivity);
+
+    void inject(HomeFragment homeFragment);
+
+    void inject(HomeViewModel homeViewModel);
 }

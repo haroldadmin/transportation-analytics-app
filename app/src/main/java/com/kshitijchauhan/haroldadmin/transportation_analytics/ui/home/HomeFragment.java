@@ -2,24 +2,51 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.home;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.TransportationAnalyticsApp;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.Constants;
+
+import javax.inject.Inject;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel mViewModel;
+    @Inject public SharedPreferences sharedPreferences;
+
+    private HomeViewModel homeViewModel;
+    private RoutesAdapter routesAdapter;
+    private ProgressBar pbLoading;
+    private RecyclerView routesRecyclerView;
+    private int userId;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        TransportationAnalyticsApp
+                .appComponent
+                .inject(this);
+
+        userId = sharedPreferences.getInt(Constants.KEY_USER_ID, -1);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -31,8 +58,41 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        // TODO: Use the ViewModel
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+
+        homeViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading) {
+                pbLoading.setVisibility(View.VISIBLE);
+            } else {
+                pbLoading.setVisibility(View.GONE);
+            }
+        });
+
+        homeViewModel.message.observe(getViewLifecycleOwner(), message -> {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        });
+
+        homeViewModel.routeRequestsList.observe(getViewLifecycleOwner(), routeRequests -> {
+            routesAdapter.submitList(routeRequests);
+        });
+
+        homeViewModel.getRouteRequests(userId);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        pbLoading = view.findViewById(R.id.pbLoading);
+        routesRecyclerView = view.findViewById(R.id.rvRouteRequests);
+
+        routesAdapter = new RoutesAdapter(new RouteRequestsDiffItemCallback());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(),
+                linearLayoutManager.getOrientation());
+
+        routesRecyclerView.setAdapter(routesAdapter);
+        routesRecyclerView.setLayoutManager(linearLayoutManager);
+        routesRecyclerView.addItemDecoration(divider);
+    }
 }
