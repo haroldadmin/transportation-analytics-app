@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.MainActivity;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.State;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ public class LoginFragment extends Fragment {
     private TextInputEditText etPassword;
     private MaterialButton btLogin;
     private ProgressBar pbLoading;
+    private TextView tvNoAccount;
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
@@ -75,11 +78,16 @@ public class LoginFragment extends Fragment {
         etPassword = view.findViewById(R.id.etPassword);
         btLogin = view.findViewById(R.id.btLogin);
         pbLoading = view.findViewById(R.id.pbLoading);
+        tvNoAccount = view.findViewById(R.id.tvNoAccount);
 
         btLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
             authViewModel.login(email, password);
+        });
+
+        tvNoAccount.setOnClickListener(v -> {
+            authViewModel.updateState(State.REGISTER_STATE);
         });
     }
 }

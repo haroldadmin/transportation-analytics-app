@@ -2,10 +2,12 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.remote;
 
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.RouteRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.common.CustomResponse;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.route_requests.RequestsService;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.route_requests.request.CreateRouteRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.UserService;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserLoginRequest;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserRegisterRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserLoginResponse;
 
 import java.util.List;
@@ -39,6 +41,10 @@ public class ApiManager {
 
     public Single<RouteRequest> createRouteRequest(CreateRouteRequest request) {
         return requestsService.createRouteRequest(request);
+    }
+
+    public Single<CustomResponse> register(UserRegisterRequest request) {
+        return userService.registerUser(request);
     }
 
 }

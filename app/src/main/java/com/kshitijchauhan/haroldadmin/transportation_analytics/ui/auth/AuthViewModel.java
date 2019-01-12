@@ -3,6 +3,7 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth;
 import android.content.SharedPreferences;
 
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserRegisterRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.Constants;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.SingleLiveEvent;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.TransportationAnalyticsApp;
@@ -10,6 +11,7 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.ApiManager
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.AuthInterceptor;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserLoginRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserLoginResponse;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.State;
 
 import javax.inject.Inject;
 
@@ -35,12 +37,16 @@ public class AuthViewModel extends ViewModel {
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private SingleLiveEvent<Boolean> mutableLoginSuccessState = new SingleLiveEvent<>();
+    private SingleLiveEvent<Boolean> mutableRegisterSuccessState = new SingleLiveEvent<>();
     private SingleLiveEvent<String> mutableMessage = new SingleLiveEvent<>();
     private MutableLiveData<Boolean> mutableIsLoading = new MutableLiveData<>();
+    private SingleLiveEvent<State> mutableState = new SingleLiveEvent<>();
 
     public LiveData<Boolean> userLoginSuccessState = mutableLoginSuccessState;
     public LiveData<String> message = mutableMessage;
     public LiveData<Boolean> isLoading = mutableIsLoading;
+    public LiveData<State> state = mutableState;
+    public LiveData<Boolean> userRegisterSuccessState = mutableRegisterSuccessState;
 
     public AuthViewModel() {
         super();
@@ -90,6 +96,63 @@ public class AuthViewModel extends ViewModel {
                         mutableMessage.setValue("An error occurred");
                     }
                 });
+    }
+
+    public void register(String name, String email, String password) {
+        UserRegisterRequest request = new UserRegisterRequest();
+        request.setName(name);
+        request.setEmail(email);
+        request.setPassword(password);
+
+        apiManager.register(request)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mutableIsLoading.postValue(true);
+                })
+                .flatMap(customResponse -> {
+                    UserLoginRequest loginRequest = new UserLoginRequest();
+                    loginRequest.setEmail(email);
+                    loginRequest.setPassword(password);
+                    return apiManager.login(loginRequest);
+                })
+                .doOnSuccess(userLoginResponse -> {
+                    sharedPreferences
+                            .edit()
+                            .putString(Constants.KEY_JWT_TOKEN, userLoginResponse.getAccessToken())
+                            .apply();
+
+                    authInterceptor.setToken(userLoginResponse.getAccessToken());
+                })
+                .flatMap((Function<UserLoginResponse, SingleSource<User>>) userLoginResponse ->
+                        apiManager.getUserProfile())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(User user) {
+                        sharedPreferences.edit()
+                                .putInt(Constants.KEY_USER_ID, user.getId())
+                                .putBoolean(Constants.KEY_IS_AUTHENTICATED, true)
+                                .apply();
+                        mutableIsLoading.postValue(false);
+                        mutableRegisterSuccessState.setValue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mutableRegisterSuccessState.setValue(false);
+                        mutableIsLoading.setValue(false);
+                        mutableMessage.setValue("An error occurred");
+                    }
+                });
+    }
+
+    public void updateState(State newState) {
+        mutableState.setValue(newState);
     }
 
 }
