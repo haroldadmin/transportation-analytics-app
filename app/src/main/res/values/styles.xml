@@ -27,6 +27,15 @@
         <item name="android:textColorHint">@color/textOnPrimaryMediumEmphasis</item>
     </style>
 
+    <style name="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.TILOnPrimary">
+        <!--This represents color of activated floating label-->
+        <item name="hintTextColor">@color/textOnPrimaryHighEmphasis</item>
+        <!--This is a color state list to represent box stroke color in different states-->
+        <item name="boxStrokeColor">@color/auth_box_stroke_color</item>
+        <!--Represents the color of the hint inside the child TextInputEditText-->
+        <item name="android:textColorHint">@color/textOnPrimaryMediumEmphasis</item>
+    </style>
+
     <style name="Widget.MaterialComponents.Toolbar.MainToolbar">
         <item name="titleTextColor">@color/textOnPrimaryHighEmphasis</item>
     </style>

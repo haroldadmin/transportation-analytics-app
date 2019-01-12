@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.transition.TransitionManager;
 
 public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCallback {
 
@@ -32,9 +33,11 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     private TextInputEditText startEditText;
     private TextInputEditText endEditText;
     private MaterialButton btSendRequest;
+    private MaterialButton btClearMap;
     private ProgressBar pbLoading;
     private Marker startMarker;
     private Marker endMarker;
+    private GoogleMap map;
 
     private LatLng start;
     private LatLng end;
@@ -83,6 +86,7 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
         endEditText = view.findViewById(R.id.etEndPoint);
         btSendRequest = view.findViewById(R.id.btSendRequest);
         pbLoading = view.findViewById(R.id.pbLoading);
+        btClearMap = view.findViewById(R.id.btClearMap);
 
         mapView.onCreate(null);
         mapView.onResume();
@@ -96,41 +100,49 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
             request.setEndPointLong(end.longitude);
             createRouteRequestViewModel.sendRequest(request);
         });
+
+        btClearMap.setOnClickListener(v -> {
+            if (this.map != null) {
+                TransitionManager.beginDelayedTransition((ViewGroup) getView());
+                map.clear();
+                startMarker = null;
+                endMarker = null;
+                startEditText.setText(null);
+                endEditText.setText(null);
+                start = null;
+                end = null;
+                btClearMap.setVisibility(View.GONE);
+                btSendRequest.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.map = googleMap;
         googleMap.setOnMapClickListener(latLng -> {
             if (start == null) {
                 start = latLng;
                 createMarker(latLng, googleMap);
                 updateOverlay(latLng, startEditText, googleMap);
             } else {
+                if (endMarker != null) {
+                    endMarker.remove();
+                }
                 end = latLng;
                 createMarker(latLng, googleMap);
                 updateOverlay(latLng, endEditText, googleMap);
             }
-        });
-
-        googleMap.setOnMarkerClickListener(marker -> {
-            if (marker.equals(startMarker)) {
-                startEditText.setText(null);
-                startMarker = null;
-                marker.remove();
-            } else if (marker.equals(endMarker)){
-                endEditText.setText(null);
-                endMarker = null;
-                marker.remove();
-            }
-            return false;
+            TransitionManager.beginDelayedTransition((ViewGroup) getView());
+            btClearMap.setVisibility(View.VISIBLE);
         });
     }
 
-    private void createMarker(LatLng point, GoogleMap map) {
+    private void createMarker(LatLng point, GoogleMap googleMap) {
         if (point.equals(start)) {
-            startMarker = map.addMarker(new MarkerOptions().position(point));
+            startMarker = googleMap.addMarker(new MarkerOptions().position(point));
         } else {
-            endMarker = map.addMarker(new MarkerOptions().position(point));
+            endMarker = googleMap.addMarker(new MarkerOptions().position(point));
         }
     }
 
@@ -139,7 +151,7 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
             String text = String.format("%f, %f", point.latitude, point.longitude);
             editText.setText(text);
         }
-
+        TransitionManager.beginDelayedTransition((ViewGroup) getView());
         if (this.start != null && this.end != null) {
             btSendRequest.setVisibility(View.VISIBLE);
         } else {
