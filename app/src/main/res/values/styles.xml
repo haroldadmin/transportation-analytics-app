@@ -18,7 +18,7 @@
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
-    <style name="Widget.MaterialComponents.TextInputLayout.OutlinedBox.AuthTIL">
+    <style name="Widget.MaterialComponents.TextInputLayout.OutlinedBox.TILOnPrimary">
         <!--This represents color of activated floating label-->
         <item name="hintTextColor">@color/textOnPrimaryHighEmphasis</item>
         <!--This is a color state list to represent box stroke color in different states-->
