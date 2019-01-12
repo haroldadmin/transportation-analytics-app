@@ -27,4 +27,8 @@
         <item name="android:textColorHint">@color/textOnPrimaryMediumEmphasis</item>
     </style>
 
+    <style name="Widget.MaterialComponents.Toolbar.MainToolbar">
+        <item name="titleTextColor">@color/textOnPrimaryHighEmphasis</item>
+    </style>
+
 </resources>
