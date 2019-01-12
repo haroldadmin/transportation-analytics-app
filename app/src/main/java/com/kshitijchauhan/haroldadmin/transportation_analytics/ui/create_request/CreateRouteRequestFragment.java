@@ -1,7 +1,6 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.create_request;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,6 +33,8 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     private TextInputEditText endEditText;
     private MaterialButton btSendRequest;
     private ProgressBar pbLoading;
+    private Marker startMarker;
+    private Marker endMarker;
 
     private LatLng start;
     private LatLng end;
@@ -99,24 +101,40 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setOnMapClickListener(latLng -> {
-            Log.d(TAG, "Clicked on: " + latLng.toString());
             if (start == null) {
                 start = latLng;
                 createMarker(latLng, googleMap);
-                updateOverlay(latLng, startEditText);
+                updateOverlay(latLng, startEditText, googleMap);
             } else {
                 end = latLng;
                 createMarker(latLng, googleMap);
-                updateOverlay(latLng, endEditText);
+                updateOverlay(latLng, endEditText, googleMap);
             }
+        });
+
+        googleMap.setOnMarkerClickListener(marker -> {
+            if (marker.equals(startMarker)) {
+                startEditText.setText(null);
+                startMarker = null;
+                marker.remove();
+            } else if (marker.equals(endMarker)){
+                endEditText.setText(null);
+                endMarker = null;
+                marker.remove();
+            }
+            return false;
         });
     }
 
     private void createMarker(LatLng point, GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(point));
+        if (point.equals(start)) {
+            startMarker = map.addMarker(new MarkerOptions().position(point));
+        } else {
+            endMarker = map.addMarker(new MarkerOptions().position(point));
+        }
     }
 
-    private void updateOverlay(LatLng point, TextInputEditText editText) {
+    private void updateOverlay(LatLng point, TextInputEditText editText, GoogleMap map) {
         if (editText != null) {
             String text = String.format("%f, %f", point.latitude, point.longitude);
             editText.setText(text);
