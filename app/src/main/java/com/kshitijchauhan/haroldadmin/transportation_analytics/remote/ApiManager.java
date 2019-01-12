@@ -3,6 +3,7 @@ package com.kshitijchauhan.haroldadmin.transportation_analytics.remote;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.RouteRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.route_requests.RequestsService;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.route_requests.request.CreateRouteRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.UserService;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserLoginRequest;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.response.UserLoginResponse;
@@ -34,6 +35,10 @@ public class ApiManager {
 
     public Single<List<RouteRequest>> getRouteRequests(int userId) {
         return userService.getRoutesForUser(userId);
+    }
+
+    public Single<RouteRequest> createRouteRequest(CreateRouteRequest request) {
+        return requestsService.createRouteRequest(request);
     }
 
 }

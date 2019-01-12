@@ -64,15 +64,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mvCreateRequest"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
-
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/editTextBarrier"
         android:layout_width="wrap_content"
@@ -81,23 +72,5 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tilStartPoint,tilEndPoint"
         app:layout_constraintTop_toBottomOf="@id/tilEndPoint" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btSendRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cornerRadius="8dp"
-        android:textColor="@color/textOnPrimaryHighEmphasis"
-        android:text="Send Request"
-        app:icon="@drawable/ic_round_navigation_24px"
-        app:iconPadding="4dp"
-        android:visibility="gone"
-        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,11 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.create_request;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -19,8 +13,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
+import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.route_requests.request.CreateRouteRequest;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCallback {
 
@@ -31,6 +32,7 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     private TextInputEditText startEditText;
     private TextInputEditText endEditText;
     private MaterialButton btSendRequest;
+    private ProgressBar pbLoading;
 
     private LatLng start;
     private LatLng end;
@@ -49,6 +51,25 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         createRouteRequestViewModel = ViewModelProviders.of(this).get(CreateRouteRequestViewModel.class);
+
+        createRouteRequestViewModel.createRequestSuccess.observe(getViewLifecycleOwner(), isSuccessful -> {
+            if (isSuccessful) {
+                Snackbar.make(getView(), "Request Sent Successfully!", Snackbar.LENGTH_SHORT).show();
+                getFragmentManager().popBackStack();
+            }
+        });
+
+        createRouteRequestViewModel.isLoading.observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading) {
+                pbLoading.setVisibility(View.VISIBLE);
+            } else {
+                pbLoading.setVisibility(View.GONE);
+            }
+        });
+
+        createRouteRequestViewModel.message.observe(getViewLifecycleOwner(), message -> {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        });
     }
 
     @Override
@@ -59,15 +80,26 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
         startEditText = view.findViewById(R.id.etStartPoint);
         endEditText = view.findViewById(R.id.etEndPoint);
         btSendRequest = view.findViewById(R.id.btSendRequest);
+        pbLoading = view.findViewById(R.id.pbLoading);
+
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(this);
+
+        btSendRequest.setOnClickListener(v -> {
+            CreateRouteRequest request = new CreateRouteRequest();
+            request.setStartPointLat(start.latitude);
+            request.setStartPointLong(start.longitude);
+            request.setEndPointLat(end.latitude);
+            request.setEndPointLong(end.longitude);
+            createRouteRequestViewModel.sendRequest(request);
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setOnMapClickListener(latLng -> {
-            Log.d(TAG, "Clicked on: " + latLng.toString() );
+            Log.d(TAG, "Clicked on: " + latLng.toString());
             if (start == null) {
                 start = latLng;
                 createMarker(latLng, googleMap);
