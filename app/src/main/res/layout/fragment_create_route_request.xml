@@ -7,6 +7,8 @@
     tools:context=".ui.create_request.CreateRouteRequestFragment">
 
     <include
-        layout="@layout/view_create_request_header" />
+        android:id="@+id/include"
+        layout="@layout/view_create_request_overlay" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

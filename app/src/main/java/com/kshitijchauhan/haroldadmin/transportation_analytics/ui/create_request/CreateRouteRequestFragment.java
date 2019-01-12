@@ -1,6 +1,5 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.create_request;
 
-import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -18,9 +17,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
 
@@ -32,6 +30,7 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
     private MapView mapView;
     private TextInputEditText startEditText;
     private TextInputEditText endEditText;
+    private MaterialButton btSendRequest;
 
     private LatLng start;
     private LatLng end;
@@ -59,6 +58,7 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
         mapView = view.findViewById(R.id.mvCreateRequest);
         startEditText = view.findViewById(R.id.etStartPoint);
         endEditText = view.findViewById(R.id.etEndPoint);
+        btSendRequest = view.findViewById(R.id.btSendRequest);
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(this);
@@ -71,11 +71,11 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
             if (start == null) {
                 start = latLng;
                 createMarker(latLng, googleMap);
-                updateEditText(latLng, startEditText);
+                updateOverlay(latLng, startEditText);
             } else {
                 end = latLng;
                 createMarker(latLng, googleMap);
-                updateEditText(latLng, endEditText);
+                updateOverlay(latLng, endEditText);
             }
         });
     }
@@ -84,10 +84,16 @@ public class CreateRouteRequestFragment extends Fragment implements OnMapReadyCa
         map.addMarker(new MarkerOptions().position(point));
     }
 
-    private void updateEditText(LatLng point, TextInputEditText editText) {
+    private void updateOverlay(LatLng point, TextInputEditText editText) {
         if (editText != null) {
             String text = String.format("%f, %f", point.latitude, point.longitude);
             editText.setText(text);
+        }
+
+        if (this.start != null && this.end != null) {
+            btSendRequest.setVisibility(View.VISIBLE);
+        } else {
+            btSendRequest.setVisibility(View.GONE);
         }
     }
 }
