@@ -5,7 +5,9 @@ import android.os.Bundle;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.R;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.transition.Fade;
 
 public class AuthenticationActivity extends AppCompatActivity {
 
@@ -26,18 +28,32 @@ public class AuthenticationActivity extends AppCompatActivity {
         }
 
         authViewModel.state.observe(this, newState -> {
+            Fade fade = new Fade();
+            Fragment existingFragment = getSupportFragmentManager().findFragmentById(R.id
+                    .auth_fragment_container);
+
             switch (newState) {
                 case LOGIN_STATE:
+
+                    LoginFragment loginFragment = LoginFragment.newInstance();
+                    loginFragment.setEnterTransition(fade);
+                    existingFragment.setExitTransition(fade);
+
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.auth_fragment_container, LoginFragment.newInstance())
+                            .replace(R.id.auth_fragment_container, loginFragment)
                             .addToBackStack(null)
                             .commit();
                     break;
                 case REGISTER_STATE:
+
+                    RegisterFragment registerFragment = RegisterFragment.newInstance();
+                    registerFragment.setEnterTransition(fade);
+                    existingFragment.setExitTransition(fade);
+
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.auth_fragment_container, RegisterFragment.newInstance())
+                            .replace(R.id.auth_fragment_container, registerFragment)
                             .addToBackStack(null)
                             .commit();
                     break;

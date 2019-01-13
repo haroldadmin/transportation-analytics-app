@@ -1,6 +1,7 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.auth;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.kshitijchauhan.haroldadmin.transportation_analytics.models.User;
 import com.kshitijchauhan.haroldadmin.transportation_analytics.remote.service.user.request.UserRegisterRequest;
@@ -27,6 +28,8 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class AuthViewModel extends ViewModel {
+
+    private static final String TAG = AuthViewModel.class.getSimpleName();
 
     @Inject
     public ApiManager apiManager;
@@ -110,12 +113,14 @@ public class AuthViewModel extends ViewModel {
                     mutableIsLoading.postValue(true);
                 })
                 .flatMap(customResponse -> {
+                    Log.d(TAG, "Received response: " + customResponse.getMessage());
                     UserLoginRequest loginRequest = new UserLoginRequest();
                     loginRequest.setEmail(email);
                     loginRequest.setPassword(password);
                     return apiManager.login(loginRequest);
                 })
                 .doOnSuccess(userLoginResponse -> {
+                    Log.d(TAG, "Got user login response");
                     sharedPreferences
                             .edit()
                             .putString(Constants.KEY_JWT_TOKEN, userLoginResponse.getAccessToken())
@@ -123,8 +128,10 @@ public class AuthViewModel extends ViewModel {
 
                     authInterceptor.setToken(userLoginResponse.getAccessToken());
                 })
-                .flatMap((Function<UserLoginResponse, SingleSource<User>>) userLoginResponse ->
-                        apiManager.getUserProfile())
+                .flatMap( userLoginResponse -> {
+                    Log.d(TAG, "Fetching user profile");
+                    return apiManager.getUserProfile();
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<User>() {
                     @Override
@@ -134,6 +141,7 @@ public class AuthViewModel extends ViewModel {
 
                     @Override
                     public void onSuccess(User user) {
+                        Log.d(TAG, "Login and registration successful");
                         sharedPreferences.edit()
                                 .putInt(Constants.KEY_USER_ID, user.getId())
                                 .putBoolean(Constants.KEY_IS_AUTHENTICATED, true)

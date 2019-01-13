@@ -1,21 +1,13 @@
 package com.kshitijchauhan.haroldadmin.transportation_analytics.ui.home;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,9 +19,19 @@ import com.kshitijchauhan.haroldadmin.transportation_analytics.utilities.State;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.TransitionManager;
+
 public class HomeFragment extends Fragment {
 
-    @Inject public SharedPreferences sharedPreferences;
+    @Inject
+    public SharedPreferences sharedPreferences;
 
     private HomeViewModel homeViewModel;
     private MainViewModel mainViewModel;
@@ -37,6 +39,8 @@ public class HomeFragment extends Fragment {
     private ProgressBar pbLoading;
     private RecyclerView routesRecyclerView;
     private FloatingActionButton fabAddRequest;
+    private ImageView ivShrug;
+    private TextView tvNoRoutes;
     private int userId;
 
     public static HomeFragment newInstance() {
@@ -79,7 +83,18 @@ public class HomeFragment extends Fragment {
         });
 
         homeViewModel.routeRequestsList.observe(getViewLifecycleOwner(), routeRequests -> {
-            routesAdapter.submitList(routeRequests);
+            if (routeRequests.isEmpty()) {
+                TransitionManager.beginDelayedTransition((ViewGroup) getView());
+                routesRecyclerView.setVisibility(View.GONE);
+                tvNoRoutes.setVisibility(View.VISIBLE);
+                ivShrug.setVisibility(View.VISIBLE);
+            } else {
+                TransitionManager.beginDelayedTransition((ViewGroup) getView());
+                routesRecyclerView.setVisibility(View.VISIBLE);
+                tvNoRoutes.setVisibility(View.GONE);
+                ivShrug.setVisibility(View.GONE);
+                routesAdapter.submitList(routeRequests);
+            }
         });
 
         homeViewModel.getRouteRequests(userId);
@@ -92,6 +107,8 @@ public class HomeFragment extends Fragment {
         pbLoading = view.findViewById(R.id.pbLoading);
         routesRecyclerView = view.findViewById(R.id.rvRouteRequests);
         fabAddRequest = view.findViewById(R.id.fabAddRouteRequest);
+        tvNoRoutes = view.findViewById(R.id.tvNoRoutes);
+        ivShrug = view.findViewById(R.id.ivShrug);
 
         routesAdapter = new RoutesAdapter(new RouteRequestsDiffItemCallback());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
